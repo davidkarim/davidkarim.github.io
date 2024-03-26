@@ -4,6 +4,7 @@ title: About
 permalink: /about/
 ---
 
+![David Karim](/assets/dkarim-300x214.jpg){: style="float: left; margin-right: 40px; margin-bottom: 40px"}
 I am a professional with over 18 years of experience in the field of tech and telecommunications. Initially focusing on backbone infrastructure and access technologies, my focus is now in Cloud Solution deployments, application of DevOps processes, and Web3.0 applications .
 
 I also remain versed in web application development; container-based and serverless cloud computing; and programming technologies such as Ruby, JavaScript, Go, and Python.  These are just some of the technologies that are enabling the future of the internet and communications.
