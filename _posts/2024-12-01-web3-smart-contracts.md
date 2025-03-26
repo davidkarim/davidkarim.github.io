@@ -13,4 +13,6 @@ Boca Contracts is a platform that allows anyone to deploy Web3 Smart Contracts b
 
 Boca Contracts is a NextJS application that is deployed on AWS via terraform. It is composed of EC2 instances, load balancers, and an RDS database.
 
-Once the church was satisfied with the new site, we had the provider update the DNS to make the site go live. The new site implements features such as a Calendar of Events, announcements banner, and a background video which I recorded using a DJI drone. The finished product can be seen here: <a href="https://bocacontracts.com" target="_blank" rel="noopener noreferrer">Boca Contracts Home Page</a>
+The project is made up of the infrastructure code, the front end code, the application itself, and the Solidity contracts. For now, the application holds contracts in Ethereum (mainnet and Sepolia) and BNB Smart Chain. 
+
+The finished product can be seen here: <a href="https://bocacontracts.com" target="_blank" rel="noopener noreferrer">Boca Contracts Home Page</a>

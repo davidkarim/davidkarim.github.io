@@ -11,4 +11,6 @@ Palmetto Dentist is a small business located in Boca Raton, Florida which specia
 
 I elected to host the site on AWS LightSail due to the low cost that it provides.
 
-Once the church was satisfied with the new site, we had the provider update the DNS to make the site go live. The new site implements features such as a Calendar of Events, announcements banner, and a background video which I recorded using a DJI drone. The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a>
+I used a templating app called Mobirise to help with the layout and then finished off the HTML by hand. I have also added several integrations with the Dental Office management platform to help schedule patients through the site directly.
+
+The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a>
