@@ -5,4 +5,6 @@
 layout: home
 ---
 
+# Welcome
+
 I am a professional with over 20 years of experience in the field of tech and telecommunications. I focus primarily on Cloud Solution deployments, application of DevOps processes, and Web3 applications.
