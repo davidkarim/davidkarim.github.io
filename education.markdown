@@ -13,6 +13,6 @@ The [Warrington College](https://warrington.ufl.edu/) of Business is currently r
 **Bachelor of Science Computer Engineering** (May 1997)
 
 ![Wyncode Academy](/assets/wyncode-logo.png){: style="float: left; width: 132px; height: 132px; margin-right: 40px"}
-**Wyncode Academy** (2016) Nine week intensive Ruby on Rails / Javascript web development full stack bootcamp in the Ft Lauderdale campus. Wyncode was later acquired by BrainStation in 2021.
+**Wyncode Academy** (2016) Nine week intensive Ruby on Rails / Javascript web development full stack bootcamp in the Ft Lauderdale campus. Wyncode Academy was later acquired by BrainStation in 2021.
 
 

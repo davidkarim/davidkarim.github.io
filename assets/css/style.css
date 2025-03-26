@@ -1,0 +1,22 @@
+---
+---
+
+/* Add our custom styles */
+.post-categories {
+  margin-bottom: 15px;
+}
+
+.post-category {
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 3px 8px;
+  margin-right: 5px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: #555;
+  text-transform: capitalize;
+}
+
+.post-category:hover {
+  background-color: #e0e0e0;
+}
