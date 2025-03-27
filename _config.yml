@@ -32,6 +32,9 @@ theme: minima
 plugins:
   - jekyll-feed
 
+# Google Analytics
+google_analytics: G-65S33QFVB0  # Replace with your actual tracking ID
+
 # Image paths should resolve relative to the markdown file
 permalink: /:title/
 
