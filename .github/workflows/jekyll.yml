@@ -13,7 +13,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'  # Specify a Ruby version that supports bundler 2.5.7
+          bundler-cache: true
+
       - name: Debug - Check Ruby version
         run: ruby --version
       
@@ -22,6 +28,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target_branch: gh-pages
+          jekyll_src: '.'
+          pre_build_commands: 'gem install bundler:2.5.7'  # Ensure correct bundler version
 
       - name: Debug - List files
         run: |
