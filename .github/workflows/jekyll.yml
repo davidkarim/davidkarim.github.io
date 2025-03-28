@@ -17,21 +17,32 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'  # Specify a Ruby version that supports bundler 2.5.7
-          bundler-cache: true
-
-      - name: Debug - Check Ruby version
-        run: ruby --version
+          ruby-version: '3.2'
+          bundler-cache: false # Changed to false to avoid using cached bundler
       
-      - name: Build and Deploy Jekyll Site
-        uses: helaili/jekyll-action@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target_branch: gh-pages
-          jekyll_src: '.'
-          pre_build_commands: 'gem install bundler:2.5.7'  # Ensure correct bundler version
-
-      - name: Debug - List files
+      - name: Debug - Check Ruby and Bundler versions
         run: |
-          echo "Repository contents after action:"
-          ls -la
+          ruby --version
+          gem --version
+      
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+      
+      - name: Build site
+        run: bundle exec jekyll build
+      
+      - name: Debug - List generated files
+        run: |
+          echo "Listing category files in _site:"
+          find _site/categories -type f | sort
+          echo "Total files in _site directory:"
+          find _site -type f | wc -l
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
