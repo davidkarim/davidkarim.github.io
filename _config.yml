@@ -23,7 +23,7 @@ email: david@bocacontracts.com
 description: >- # this means to ignore newlines until "baseurl:"
   I am a professional with over 20 years of experience in the field of tech and telecommunications.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://dkarim.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: davidkarim
 github_username:  davidkarim
 
