@@ -1,0 +1,9 @@
+// filepath: /Users/davidkarim/Repos/David/davidkarim.github.io/sitemap.txt
+http://yourdomain.com/
+http://yourdomain.com/about/
+http://yourdomain.com/education/
+http://yourdomain.com/categories/
+http://yourdomain.com/small-business-marketing/
+http://yourdomain.com/web3-smart-contracts/
+http://yourdomain.com/wordpress-migration/
+http://yourdomain.com/macbook-setup-steps/
