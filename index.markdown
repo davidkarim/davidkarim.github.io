@@ -7,4 +7,9 @@ title: "Welcome"
 exclude_from_nav: true
 ---
 
-I am a professional with over 20 years of experience in the field of tech and telecommunications. I focus primarily on Cloud Solution deployments, application of DevOps processes, and Web3 applications.
+![David Karim Laptop](/assets/images/comic_me_on_computer.png){: style="float: left; margin-right: 40px; margin-bottom: 40px; width: 200px; border-radius: 20px;"}
+I am a professional with over 20 years of experience in the field of tech and telecommunications. I focus primarily on Software Deployment Automation, AWS Cloud Solutions, application of DevOps processes, and Web3 applications.
+
+On the Cloud side, I have the bulk of my expertise on Amazon Web Services, but I have worked on other cloud providers such as Google Cloud Platform, Oracle Cloud, and Digital Ocean.
+
+I have also worked on Web3 infrastructure focused on implementing automated deployments of Web3 nodes to support numerous chains such as Ethereum, Solana, BSC, and others. I have also worked with Smart Contracts across these chains.

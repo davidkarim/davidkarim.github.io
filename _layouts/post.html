@@ -10,7 +10,7 @@ layout: default
     {% if page.categories %}
     <div class="post-categories">
       {% for category in page.categories %}
-      <span class="post-category">{{ category }}</span>
+      <a href="{{ site.baseurl }}/categories/{{ category | slugify }}/" class="post-category">{{ category }}</a>
       {% endfor %}
     </div>
     {% endif %}

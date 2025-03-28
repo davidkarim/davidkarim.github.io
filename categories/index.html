@@ -1,0 +1,35 @@
+---
+layout: page
+title: Categories
+permalink: /categories/
+---
+
+<div class="categories-archive">
+  <p class="category-intro">Browse all posts by category:</p>
+  
+  <div class="category-grid">
+    {% assign categories_sorted = site.categories | sort %}
+    {% for category in categories_sorted %}
+      <div class="category-card">
+        <h3 class="category-name">
+          <a href="{{ site.baseurl }}/categories/{{ category[0] | slugify }}/">
+            {{ category[0] | capitalize }}
+          </a>
+        </h3>
+        <span class="category-count">{{ category[1].size }} post{% if category[1].size != 1 %}s{% endif %}</span>
+        <ul class="category-post-list">
+          {% for post in category[1] limit:3 %}
+            <li>
+              <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+            </li>
+          {% endfor %}
+          {% if category[1].size > 3 %}
+            <li class="more-link">
+              <a href="{{ site.baseurl }}/categories/{{ category[0] | slugify }}/">See all →</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</div>

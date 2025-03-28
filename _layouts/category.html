@@ -1,0 +1,60 @@
+---
+layout: default
+---
+
+<div class="category-page">
+  <h1 class="page-heading">
+    <span class="category-title">{{ page.category | capitalize }}</span>
+    <span class="category-count">{{ site.categories[page.category].size }} post{% if site.categories[page.category].size != 1 %}s{% endif %}</span>
+  </h1>
+  
+  <div class="category-navigation">
+    <a href="{{ site.baseurl }}/categories/" class="all-categories-link">← All Categories</a>
+  </div>
+  
+  <div class="category-description">
+    {% case page.category %}
+      {% when 'projects' %}
+        Posts about various projects and implementations.
+      {% when 'web3' %}
+        Posts related to blockchain, Web3 technologies, and decentralized applications.
+      {% else %}
+        Posts categorized under {{ page.category }}.
+    {% endcase %}
+  </div>
+  
+  <ul class="post-list">
+    {% for post in site.categories[page.category] %}
+      <li class="category-post-item">
+        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+          </a>
+        </h3>
+        {% if post.excerpt %}
+          <div class="post-excerpt">
+            {{ post.excerpt | strip_html | truncatewords: 30 }}
+            <a href="{{ post.url | relative_url }}" class="read-more">Read more →</a>
+          </div>
+        {% endif %}
+        
+        {% if post.categories.size > 1 %}
+          <div class="related-categories">
+            Also in:
+            {% for cat in post.categories %}
+              {% if cat != page.category %}
+                <a href="{{ site.baseurl }}/categories/{{ cat | slugify }}/" class="related-category">{{ cat }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  
+  <div class="pagination-links">
+    <a href="{{ '/' | relative_url }}" class="back-home">Back to Home</a>
+  </div>
+</div>

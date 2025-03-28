@@ -10,10 +10,18 @@ layout: default
   {{ content }}
 
   {%- if site.posts.size > 0 -%}
+    <div class="category-filter">
+      <span class="category-filter-item active" data-category="all">All</span>
+      {% assign categories = site.categories | sort %}
+      {% for category in categories %}
+        <span class="category-filter-item" data-category="{{ category[0] }}">{{ category[0] }}</span>
+      {% endfor %}
+    </div>
+    
     <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
     <ul class="post-list">
       {%- for post in site.posts -%}
-      <li>
+      <li data-categories="{{ post.categories | join: ' ' }}">
         {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
         <span class="post-meta">{{ post.date | date: date_format }}</span>
         <h3>
@@ -30,5 +38,37 @@ layout: default
 
     <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
   {%- endif -%}
-
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterItems = document.querySelectorAll('.category-filter-item');
+    const posts = document.querySelectorAll('.post-list li');
+    
+    filterItems.forEach(item => {
+      item.addEventListener('click', function() {
+        // Remove active class from all items
+        filterItems.forEach(i => i.classList.remove('active'));
+        
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        const category = this.getAttribute('data-category');
+        
+        // Filter posts
+        posts.forEach(post => {
+          if (category === 'all') {
+            post.style.display = 'block';
+          } else {
+            const postCategories = post.getAttribute('data-categories');
+            if (postCategories.includes(category)) {
+              post.style.display = 'block';
+            } else {
+              post.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  });
+</script>
