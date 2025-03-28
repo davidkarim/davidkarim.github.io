@@ -2,11 +2,12 @@
 layout: post
 title: Initial Configuration of a Dev Environment MacBook
 date: 2025-03-01
-categories: projects
+categories:
+  - instructional
 tags:
 ---
 
-![](/assets/images/2025-03-01-macbook-setup-steps/macbookpro_vscode.png)
+![](/assets/images/2025-03-01-macbook-setup-steps/macbookpro_vscode.png){: style="border-radius: 20px;"}
 
 ## Introduction
 
@@ -70,6 +71,13 @@ gem install bundler:2.5.7
 ```bash
 curl -sS https://webi.sh/vim-nerdtree | sh; \ source ~/.config/envman/PATH.env
 ```
+
+* If necessary, install Terraform using brew
+	* [See here](https://developer.hashicorp.com/terraform/install)
+* If necessary, install tfenv using brew
+	* [Refer to repo](https://github.com/tfutils/tfenv)
+* If necessary, install AWS CLI
+	* [See here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 ## Important Files to Preserve
 
