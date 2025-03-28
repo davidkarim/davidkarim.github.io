@@ -1,0 +1,266 @@
+/* Add our custom styles */
+.post-categories {
+  margin-bottom: 15px;
+}
+
+.post-category {
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 3px 8px;
+  margin-right: 5px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: #555;
+  text-transform: capitalize;
+  text-decoration: none;
+}
+
+.post-category:hover {
+  background-color: #e0e0e0;
+  text-decoration: none;
+}
+
+/* Category navigation dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 10px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 0.9em;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Add category filter bar */
+.category-filter {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.category-filter-item {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-filter-item.active {
+  background-color: #4c51af;
+  color: white;
+}
+
+.category-count {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 5px;
+}
+
+/* Make the dropdown more attractive */
+.dropdown-content {
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 5px 0;
+}
+
+.dropdown-content a {
+  border-bottom: 1px solid #eee;
+  padding: 10px 16px;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-content a:last-child {
+  border-bottom: none;
+}
+
+.categories-archive {
+  margin-top: 20px;
+}
+
+.category-intro {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.category-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.category-name a {
+  color: #333;
+  text-decoration: none;
+}
+
+.category-count {
+  font-size: 0.9em;
+  color: #777;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.category-post-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.category-post-list li {
+  margin-bottom: 8px;
+}
+
+.category-post-list a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.category-post-list a:hover {
+  text-decoration: underline;
+}
+
+.more-link {
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.category-page {
+  margin-bottom: 40px;
+}
+
+.category-title {
+  margin-right: 10px;
+}
+
+.category-navigation {
+  margin-bottom: 20px;
+}
+
+.all-categories-link {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.9em;
+  text-decoration: none;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.all-categories-link:hover {
+  background-color: #e0e0e0;
+  text-decoration: none;
+}
+
+.category-description {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 25px;
+  font-style: italic;
+  color: #555;
+}
+
+.category-post-item {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.category-post-item:last-child {
+  border-bottom: none;
+}
+
+.post-excerpt {
+  color: #555;
+  margin: 10px 0;
+}
+
+.read-more {
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.related-categories {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.related-category {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-left: 5px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: #555;
+}
+
+.pagination-links {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.back-home {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.back-home:hover {
+  background-color: #e0e0e0;
+  text-decoration: none;
+}

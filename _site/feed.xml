@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-03-27T23:52:07-04:00</updated><id>/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Initial Configuration of a Dev Environment MacBook</title><link href="/macbook-setup-steps/" rel="alternate" type="text/html" title="Initial Configuration of a Dev Environment MacBook" /><published>2025-03-01T00:00:00-05:00</published><updated>2025-03-01T00:00:00-05:00</updated><id>/macbook-setup-steps</id><content type="html" xml:base="/macbook-setup-steps/"><![CDATA[<p><img src="/assets/images/2025-03-01-macbook-setup-steps/macbookpro_vscode.png" alt="" style="border-radius: 20px;" /></p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>After receiving a new MacBook, I usually follow a similar set of steps to get it ready as a development MacBook. Here, I show a list of all the tooling I install in order to get it most of the way there and also the files which should be preserved from one device to the next. This installation works best if performed in the sequence shown.</p>
+
+<h2 id="steps">Steps</h2>
+
+<p>The following steps were performed to configure MacBook Pro</p>
+
+<ul>
+  <li>Make sure XCode is installed, select the components you need:
+    <ul>
+      <li>macOS 15.x</li>
+      <li>iOS 18.x</li>
+    </ul>
+  </li>
+  <li>Install Chrome</li>
+  <li>Install iTerm2. Make sure to also install shell integration which can be found in the iTerm2 main menu.</li>
+  <li>Install brew
+    <ul>
+      <li>See here: <a href="https://brew.sh/">https://brew.sh/</a></li>
+      <li>Homebrew should also install command line tools for Xcode</li>
+    </ul>
+  </li>
+  <li>Install wget: <code class="language-plaintext highlighter-rouge">brew install wget</code></li>
+  <li>Install oh-my-zsh
+    <ul>
+      <li><a href="https://github.com/ohmyzsh/ohmyzsh">See here</a></li>
+    </ul>
+  </li>
+  <li>Install zsh autosuggestions:
+    <ul>
+      <li>https://github.com/zsh-users/zsh-autosuggestions</li>
+      <li><code class="language-plaintext highlighter-rouge">brew install zsh-autosuggestions</code></li>
+    </ul>
+  </li>
+  <li>Install powerlevel 10K
+    <ul>
+      <li><a href="https://github.com/romkatv/powerlevel10k">See here</a></li>
+      <li>Install this plugin to add fonts and nice prompt. Use iterm2. Follow instructions for manual installation, this will install Meslo Nerd Font automatically through iTerm2.</li>
+    </ul>
+  </li>
+  <li>Install FZF (fuzzy completion in terminal)
+    <ul>
+      <li><a href="https://github.com/junegunn/fzf">See here</a></li>
+      <li>Use brew to install; then look in the readme for instructions on installing key bindings (such as those for fuzzy auto-completion for CTRL-R)</li>
+      <li>To install useful key bindings and fuzzy completion (after installing fzf via brew):</li>
+      <li><code class="language-plaintext highlighter-rouge">$(brew --prefix)/opt/fzf/install</code></li>
+    </ul>
+  </li>
+  <li>Install zsh syntax highlighting
+    <ul>
+      <li><a href="https://github.com/zsh-users/zsh-syntax-highlighting">See here</a></li>
+      <li>Use brew to install: <code class="language-plaintext highlighter-rouge">brew install zsh-syntax-highlighting</code></li>
+    </ul>
+  </li>
+  <li>Install VS Code</li>
+  <li>Install Postgres from the website. Don’t use brew
+    <ul>
+      <li>Install through downloadable app <a href="https://postgresapp.com/downloads.html">here</a></li>
+    </ul>
+  </li>
+  <li>Install DBeaver
+    <ul>
+      <li><a href="https://dbeaver.io/download/">See here</a></li>
+    </ul>
+  </li>
+  <li>Install Docker
+    <ul>
+      <li><a href="https://docs.docker.com/desktop/setup/install/mac-install/">See here</a></li>
+    </ul>
+  </li>
+  <li>Install bat using brew (bat is an improved version of cat command)</li>
+  <li>Install node and npm using brew</li>
+  <li>Install rbenv, Ruby, and bundler</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>rbenv
+rbenv init
+<span class="nb">echo</span> <span class="s1">'eval "$(rbenv init -)"'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+<span class="c"># Install Ruby (version 3.2.2)</span>
+rbenv <span class="nb">install </span>3.2.2 
+rbenv global 3.2.2
+
+<span class="c"># Install bundler</span>
+gem <span class="nb">install </span>bundler:2.5.7
+</code></pre></div></div>
+
+<ul>
+  <li>Make sure you have the .vimrc file which has syntax highlighting for vim and also starts NerdTree with the vim command.</li>
+  <li>Install nerdtree:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-sS</span> https://webi.sh/vim-nerdtree | sh<span class="p">;</span> <span class="se">\ </span><span class="nb">source</span> ~/.config/envman/PATH.env
+</code></pre></div></div>
+
+<ul>
+  <li>If necessary, install Terraform using brew
+    <ul>
+      <li><a href="https://developer.hashicorp.com/terraform/install">See here</a></li>
+    </ul>
+  </li>
+  <li>If necessary, install tfenv using brew
+    <ul>
+      <li><a href="https://github.com/tfutils/tfenv">Refer to repo</a></li>
+    </ul>
+  </li>
+  <li>If necessary, install AWS CLI
+    <ul>
+      <li><a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">See here</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="important-files-to-preserve">Important Files to Preserve</h2>
+
+<p>If I am migrating from one device to another, I generally make sure the following files are moved over to the new device:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/.vimrc
+
+<span class="c"># All SSH keys</span>
+~/.ssh/
+
+<span class="c"># The shell history</span>
+~/.zsh_history
+
+<span class="c"># I keep all shell alias commands in .alias_list</span>
+~/.alias_list
+</code></pre></div></div>]]></content><author><name></name></author><category term="instructional" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Web3 Smart Contracts</title><link href="/web3-smart-contracts/" rel="alternate" type="text/html" title="Web3 Smart Contracts" /><published>2024-12-01T07:00:00-05:00</published><updated>2024-12-01T07:00:00-05:00</updated><id>/web3-smart-contracts</id><content type="html" xml:base="/web3-smart-contracts/"><![CDATA[<p><img src="/assets/images/bocacontracts-main.png" alt="Alt text for the image" style="float: left; width: 400px; margin-right: 25px; margin-bottom: 10px;" /></p>
+
+<p>Boca Contracts is a platform that allows anyone to deploy Web3 Smart Contracts based on a set of pre-defined templates. Anyone visiting the site can deploy a smart contract to any of several blockchains.</p>
+
+<p>Boca Contracts is a NextJS application that is deployed on AWS via terraform. It is composed of EC2 instances, load balancers, and an RDS database.</p>
+
+<p>The project is made up of the infrastructure code, the front end code, the application itself, and the Solidity contracts. For now, the application holds contracts in Ethereum (mainnet and Sepolia) and BNB Smart Chain.</p>
+
+<p>The finished product can be seen here: <a href="https://bocacontracts.com" target="_blank" rel="noopener noreferrer">Boca Contracts Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><category term="web3" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Small Business Marketing</title><link href="/small-business-marketing/" rel="alternate" type="text/html" title="Small Business Marketing" /><published>2024-11-15T07:00:00-05:00</published><updated>2024-11-15T07:00:00-05:00</updated><id>/small-business-marketing</id><content type="html" xml:base="/small-business-marketing/"><![CDATA[<p><img src="/assets/images/palmettodentist.png" alt="Alt text for the image" style="float: left; width: 400px; margin-right: 25px; margin-bottom: 10px;" /></p>
+
+<p>Palmetto Dentist is a small business located in Boca Raton, Florida which specializes in dental implants and other dental services. I worked on their site, which serves mostly as a marketing presence and a landing page for occasional marketing campaigns.</p>
+
+<p>I elected to host the site on AWS LightSail due to the low cost that it provides.</p>
+
+<p>I used a templating app called Mobirise to help with the layout and then finished off the HTML by hand. I have also added several integrations with the Dental Office management platform to help schedule patients through the site directly.</p>
+
+<p>The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">WordPress Migration</title><link href="/wordpress-migration/" rel="alternate" type="text/html" title="WordPress Migration" /><published>2024-11-01T08:00:00-04:00</published><updated>2024-11-01T08:00:00-04:00</updated><id>/wordpress-migration</id><content type="html" xml:base="/wordpress-migration/"><![CDATA[<p><img src="/assets/images/saintjohn.jpg" alt="Alt text for the image" style="float: left; width: 400px; margin-right: 25px; margin-bottom: 10px;" /></p>
+
+<p>The Saint John website originally existed as a WordPress site that had not been updated in several years. The parish had attempted to create a more updated website but was trying to implement it using pure HTML and CSS without considering other factors. For example, they already had a company which provided WordPress hosting for them and would likely have difficulties changing their deployment, backup, and support processes. The church did not want to take on another provider or any additional expense.</p>
+
+<p>I suggested to them that they could continue to use WordPress, but that it would likely be best to create a new site using more modern templates. I created a temporary WordPress server to create an initial mockup we could work with. After getting the main page and the menu structure in place, I had the hosting provider spin up a new WordPress site and I migrated the site over to their server while continuing to have the public DNS point to the old website.</p>
+
+<p>Once the church was satisfied with the new site, we had the provider update the DNS to make the site go live. The new site implements features such as a Calendar of Events, announcements banner, and a background video which I recorded using a DJI drone. The finished product can be seen here: <a href="https://saintjohn-bocaraton.com" target="_blank" rel="noopener noreferrer">Saint John</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry></feed>
