@@ -36,6 +36,13 @@ jobs:
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
+
+      - name: Debug - List generated files
+        run: |
+          echo "Listing category files in _site:"
+          find _site/categories -type f | sort
+          echo "Total files in _site directory:"
+          find _site -type f | wc -l
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
