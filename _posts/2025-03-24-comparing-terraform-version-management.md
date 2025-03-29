@@ -5,12 +5,11 @@ date: 2025-03-24
 categories:
   - infrastructure
 tags:
-  - in-progress
 ---
 
 ![](/assets/images/2025-03-24-comparing-terraform-version-management/tfenv-tfswitch-tenv.png){: style="border-radius: 20px;"}
 
-## Introduction
+## tenv will replace the others
 
 When using Terraform, it’s common to rely on a version manager to easily switch between different versions across projects or environments. For years, **tfenv** has been the go-to solution in the community. But with the tool seeing little to no active development lately, it might be time to consider more modern alternatives.
 
