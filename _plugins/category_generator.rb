@@ -19,14 +19,14 @@ module Jekyll
       @site = site
       @base = base
       @dir = dir
-      @name = "#{category.downcase}.md"
+      @name = "#{category.downcase.gsub(' ', '-')}.md"
 
       self.process(@name)
       self.read_yaml(File.join(base, '_layouts'), 'category.html')
       
       self.data['title'] = category.capitalize
       self.data['category'] = category
-      self.data['permalink'] = "/categories/#{category.downcase}/"
+      self.data['permalink'] = "/categories/#{category.downcase.gsub(' ', '-')}/"
     end
   end
 end
