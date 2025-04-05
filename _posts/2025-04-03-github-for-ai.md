@@ -1,7 +1,8 @@
 ---
 layout: post
 title: Hugging Face - The Github for AI
-date: 2025-04-04
+date: 2025-04-03
+image: /assets/images/2025-04-03-github-for-ai/github_hugging_face.png
 categories:
   - Artificial Intelligence
 tags:

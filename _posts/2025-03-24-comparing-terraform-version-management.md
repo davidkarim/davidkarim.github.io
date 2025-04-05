@@ -2,6 +2,7 @@
 layout: post
 title: Comparing Terraform Version Management Tools
 date: 2025-03-24
+image: /assets/images/2025-03-24-comparing-terraform-version-management/tfenv-tfswitch-tenv.png
 categories:
   - infrastructure
 tags:

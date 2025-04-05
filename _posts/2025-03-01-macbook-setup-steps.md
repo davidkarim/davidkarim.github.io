@@ -2,6 +2,7 @@
 layout: post
 title: Initial Configuration of a Dev Environment MacBook
 date: 2025-03-01
+image: /assets/images/2025-03-01-macbook-setup-steps/macbookpro_vscode.png
 categories:
   - instructional
 tags:

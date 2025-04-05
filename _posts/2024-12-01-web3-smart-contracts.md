@@ -2,6 +2,7 @@
 layout: post
 title:  "Web3 Smart Contracts"
 date:   2024-12-01 08:00:00 -0400
+image: /assets/images/bocacontracts-main.png
 categories:
   - projects
   - web3
