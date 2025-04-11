@@ -10,7 +10,13 @@ I am a professional with over 20 years of experience in the field of tech and te
 I also remain versed in web application development; container-based and serverless cloud computing; and programming technologies such as Ruby, JavaScript, Go, and Python.  These are just some of the technologies that are enabling the future of the internet and communications.
 
 **DevOps Engineer**
-QuickNode, FL (September 2021 – present) DevOps Engineer supporting Web3 infrastructure in multi-cloud environment. Responsibilities include deployment automation and operations support.
+Guidehouse, FL (April 2024 - present) Support of Federal AWS Gov Cloud accounts, building infrastructure via terraform, and maintaining a secure environment.
+
+**Cloud Automation Architect**
+Celertek, FL (September 2023 - March 2024) Support of AWS infrastructure for government customer through Guidehouse.
+
+**DevOps Engineer**
+QuickNode, FL (September 2021 – July 2023) DevOps Engineer supporting Web3 infrastructure in multi-cloud environment. Responsibilities include deployment automation and operations support.
 
 **DevOps Consultant**
 Amazon Web Services, FL (November 2020 – September 2021) AWS DevOps consultant supporting Professional Services customers throughout the Americas.
