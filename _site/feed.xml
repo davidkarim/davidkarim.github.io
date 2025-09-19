@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-09-19T00:06:12-04:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Deploying a Next.js app to AWS Amplify</title><link href="https://dkarim.com/deploying-to-aws-amplify/" rel="alternate" type="text/html" title="Deploying a Next.js app to AWS Amplify" /><published>2025-08-01T00:00:00-04:00</published><updated>2025-08-01T00:00:00-04:00</updated><id>https://dkarim.com/deploying-to-aws-amplify</id><content type="html" xml:base="https://dkarim.com/deploying-to-aws-amplify/"><![CDATA[<p><img src="/assets/images/2025-08-01-deploying-to-aws-amplify/aws-amplify-next.png" alt="" style="border-radius: 20px;" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-09-19T02:02:58-04:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Deploying a Next.js app to AWS Amplify</title><link href="https://dkarim.com/deploying-to-aws-amplify/" rel="alternate" type="text/html" title="Deploying a Next.js app to AWS Amplify" /><published>2025-08-01T00:00:00-04:00</published><updated>2025-08-01T00:00:00-04:00</updated><id>https://dkarim.com/deploying-to-aws-amplify</id><content type="html" xml:base="https://dkarim.com/deploying-to-aws-amplify/"><![CDATA[<p><img src="/assets/images/2025-08-01-deploying-to-aws-amplify/aws-amplify-next.png" alt="" style="border-radius: 20px;" /></p>
 
 <h1 id="how-to-deploy-a-nextjs-application-using-aws-amplify">How to Deploy a Next.js Application Using AWS Amplify</h1>
 
@@ -91,7 +91,7 @@
   </tbody>
 </table>
 
-<p>While Vercel (creator of Next.js) is tightly integrated with the framework, <strong>Amplify gives you more flexibility</strong> with backend services and <strong>closer integration with the AWS ecosystem</strong>—perfect if you already use AWS services like Lambda, S3, DynamoDB, or Cognito.</p>
+<p>While Vercel (creator of Next.js) is tightly integrated with the framework, Amplify gives you more flexibility with backend services and closer integration with the AWS ecosystem if you already use AWS services like Lambda, S3, DynamoDB, or Cognito.</p>
 
 <hr />
 
@@ -104,16 +104,13 @@
 
 <p>If not already done:</p>
 
-<p>```bash
-git init
-git add .
-git commit -m “Initial commit”
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git init
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Initial commit"</span>
 git remote add origin https://github.com/your-username/your-repo.git
-git branch -M master
-git push -u origin master
-```</p>
-
-<hr />
+git branch <span class="nt">-M</span> master
+git push <span class="nt">-u</span> origin master
+</code></pre></div></div>
 
 <h3 id="step-2-log-into-the-aws-amplify-console"><strong>Step 2: Log into the AWS Amplify Console</strong></h3>
 <p>Go to the <a href="https://console.aws.amazon.com/amplify/home">AWS Amplify Console</a> and click **“Create New App”.</p>

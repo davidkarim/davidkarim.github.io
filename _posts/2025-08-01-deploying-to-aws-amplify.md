@@ -48,7 +48,7 @@ In this post, we'll explore:
 | **Pricing Model**    | Usage-based    | Usage-based    | Usage-based    | Pay-per-instance |
 | **Scalability**      | Auto-scaled    | Auto-scaled    | Auto-scaled    | Manual scaling   |
 
-While Vercel (creator of Next.js) is tightly integrated with the framework, **Amplify gives you more flexibility** with backend services and **closer integration with the AWS ecosystem**—perfect if you already use AWS services like Lambda, S3, DynamoDB, or Cognito.
+While Vercel (creator of Next.js) is tightly integrated with the framework, Amplify gives you more flexibility with backend services and closer integration with the AWS ecosystem if you already use AWS services like Lambda, S3, DynamoDB, or Cognito.
 
 ---
 
@@ -61,16 +61,14 @@ Ensure your Next.js project is pushed to a Git provider like GitHub, GitLab, or 
 
 If not already done:
 
-\`\`\`bash
+```bash
 git init
 git add .
 git commit -m "Initial commit"
 git remote add origin https://github.com/your-username/your-repo.git
 git branch -M master
 git push -u origin master
-\`\`\`
-
----
+```
 
 ### **Step 2: Log into the AWS Amplify Console**
 Go to the [AWS Amplify Console](https://console.aws.amazon.com/amplify/home) and click **"Create New App".
