@@ -1,4 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-04-17T00:58:19-04:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">From Evernote to Obsidian</title><link href="https://dkarim.com/from-evernote-to-obsidian/" rel="alternate" type="text/html" title="From Evernote to Obsidian" /><published>2025-04-14T00:00:00-04:00</published><updated>2025-04-14T00:00:00-04:00</updated><id>https://dkarim.com/from-evernote-to-obsidian</id><content type="html" xml:base="https://dkarim.com/from-evernote-to-obsidian/"><![CDATA[<p><img src="/assets/images/2025-04-14-from-evernote-to-obsidian/evernote-obsidian.png" alt="" style="border-radius: 20px;" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-09-18T23:34:20-04:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Deploying a Next.js app to AWS Amplify</title><link href="https://dkarim.com/deploying-to-aws-amplify/" rel="alternate" type="text/html" title="Deploying a Next.js app to AWS Amplify" /><published>2025-08-01T00:00:00-04:00</published><updated>2025-08-01T00:00:00-04:00</updated><id>https://dkarim.com/deploying-to-aws-amplify</id><content type="html" xml:base="https://dkarim.com/deploying-to-aws-amplify/"><![CDATA[<p><img src="/assets/images/2025-08-01-deploying-to-aws-amplify/aws-amplify-next.png" alt="" style="border-radius: 20px;" /></p>
+
+<h1 id="how-to-deploy-a-nextjs-application-using-aws-amplify">How to Deploy a Next.js Application Using AWS Amplify</h1>
+
+<p>Deploying a web application shouldn’t be a bottleneck—it should be fast, cost-effective, and scalable. If you’re working with <strong>Next.js</strong>, one of the most popular frameworks for building React applications, there’s no better way to deploy than with <strong>AWS Amplify</strong>.</p>
+
+<p>In this post, we’ll explore:</p>
+<ul>
+  <li>Why AWS Amplify is a great choice for hosting your Next.js app.</li>
+  <li>How it compares to other options like Vercel, Netlify, and EC2.</li>
+  <li>A simple, step-by-step guide to get your app live with Amplify.</li>
+</ul>
+
+<hr />
+
+<h2 id="why-choose-aws-amplify">Why Choose AWS Amplify?</h2>
+
+<p><strong>AWS Amplify</strong> is a powerful platform that automates the deployment and hosting of full-stack web apps. For Next.js developers, Amplify brings several key advantages:</p>
+
+<h3 id="speed">Speed</h3>
+<ul>
+  <li><strong>CI/CD built-in</strong>: Connect your GitHub repo and Amplify automatically builds and deploys on every commit.</li>
+  <li><strong>SSR support</strong>: Amplify natively supports Server-Side Rendering (SSR) and Static Site Generation (SSG) for Next.js apps.</li>
+  <li><strong>Global CDN</strong>: Amplify deploys your app to edge locations, ensuring low-latency access around the globe.</li>
+</ul>
+
+<h3 id="cost-efficiency">Cost Efficiency</h3>
+<ul>
+  <li><strong>Pay for what you use</strong>: No flat monthly fees. You only pay for build time and hosting bandwidth.</li>
+  <li><strong>Generous free tier</strong>: Great for side projects or startups just getting started.</li>
+  <li><strong>No need to manage infrastructure</strong>: Unlike EC2 or Fargate, you don’t need to worry about provisioning or scaling servers.</li>
+</ul>
+
+<hr />
+
+<h2 id="amplify-vs-other-hosting-solutions">Amplify vs Other Hosting Solutions</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>AWS Amplify</th>
+      <th>Vercel</th>
+      <th>Netlify</th>
+      <th>AWS EC2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Ease of Setup</strong></td>
+      <td>Easy</td>
+      <td>Very Easy</td>
+      <td>Very Easy</td>
+      <td>Complex</td>
+    </tr>
+    <tr>
+      <td><strong>SSR Support</strong></td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Limited</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td><strong>Custom Domains</strong></td>
+      <td>Free HTTPS</td>
+      <td>Free HTTPS</td>
+      <td>Free HTTPS</td>
+      <td>Manual Setup</td>
+    </tr>
+    <tr>
+      <td><strong>Build Automation</strong></td>
+      <td>Built-in CI/CD</td>
+      <td>Built-in CI/CD</td>
+      <td>Built-in CI/CD</td>
+      <td>Manual</td>
+    </tr>
+    <tr>
+      <td><strong>Pricing Model</strong></td>
+      <td>Usage-based</td>
+      <td>Usage-based</td>
+      <td>Usage-based</td>
+      <td>Pay-per-instance</td>
+    </tr>
+    <tr>
+      <td><strong>Scalability</strong></td>
+      <td>Auto-scaled</td>
+      <td>Auto-scaled</td>
+      <td>Auto-scaled</td>
+      <td>Manual scaling</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>While Vercel (creator of Next.js) is tightly integrated with the framework, <strong>Amplify gives you more flexibility</strong> with backend services and <strong>closer integration with the AWS ecosystem</strong>—perfect if you already use AWS services like Lambda, S3, DynamoDB, or Cognito.</p>
+
+<hr />
+
+<h2 id="step-by-step-deploy-a-nextjs-app-to-aws-amplify">Step-by-Step: Deploy a Next.js App to AWS Amplify</h2>
+
+<p>Here’s how to get your app up and running on Amplify in minutes:</p>
+
+<h3 id="step-1-push-your-app-to-github"><strong>Step 1: Push Your App to GitHub</strong></h3>
+<p>Ensure your Next.js project is pushed to a Git provider like GitHub, GitLab, or Bitbucket.</p>
+
+<p>If not already done:</p>
+
+<p>```bash
+git init
+git add .
+git commit -m “Initial commit”
+git remote add origin https://github.com/your-username/your-repo.git
+git branch -M master
+git push -u origin master
+```</p>
+
+<hr />
+
+<h3 id="step-2-log-into-the-aws-amplify-console"><strong>Step 2: Log into the AWS Amplify Console</strong></h3>
+<p>Go to the <a href="https://console.aws.amazon.com/amplify/home">AWS Amplify Console</a> and click **“Create New App”.</p>
+
+<p><img src="/assets/images/2025-08-01-deploying-to-aws-amplify/amplify-first-step.png" alt="" style="border-radius: 20px;" /></p>
+<h3 id="step-3-connect-your-git-repository"><strong>Step 3: Connect Your Git Repository</strong></h3>
+<ul>
+  <li>Choose GitHub (or your provider of choice) and click on Next.</li>
+  <li>Authenticate with GitHub and select your repository and branch.</li>
+  <li>In the App Settings you will see Service Role, leave it as default: Create and use a new service role</li>
+</ul>
+
+<p>Amplify will auto-detect that you’re using a Next.js app and prefill the build settings.</p>
+
+<p>If you click on Edit YML File, you’ll see a default <code class="language-plaintext highlighter-rouge">amplify.yml</code> file like this:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">1</span>
+<span class="na">frontend</span><span class="pi">:</span>
+  <span class="na">phases</span><span class="pi">:</span>
+    <span class="na">preBuild</span><span class="pi">:</span>
+      <span class="na">commands</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">npm ci --cache .npm --prefer-offline</span>
+    <span class="na">build</span><span class="pi">:</span>
+      <span class="na">commands</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">npm run build</span>
+  <span class="na">artifacts</span><span class="pi">:</span>
+    <span class="na">baseDirectory</span><span class="pi">:</span> <span class="s">.next</span>
+    <span class="na">files</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">**/*'</span>
+  <span class="na">cache</span><span class="pi">:</span>
+    <span class="na">paths</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">.next/cache/**/*</span>
+      <span class="pi">-</span> <span class="s">.npm/**/*</span>
+
+</code></pre></div></div>
+<p>You can tweak this file later if needed.</p>
+
+<h3 id="step-4-review-and-deploy"><strong>Step 4: Review and Deploy</strong></h3>
+<ul>
+  <li>Click <strong>“Next”</strong> and review the build settings.</li>
+  <li>Click <strong>“Save and Deploy”</strong>.</li>
+</ul>
+
+<p>Amplify will:</p>
+<ul>
+  <li>Clone your repo</li>
+  <li>Install dependencies</li>
+  <li>Build your app</li>
+  <li>Deploy it to a globally distributed CDN</li>
+</ul>
+
+<p>Note that Amplify will select an instance type for you.</p>
+
+<p><img src="/assets/images/2025-08-01-deploying-to-aws-amplify/amplify-instance-size-example.png" alt="" style="border-radius: 20px;" /></p>
+
+<h3 id="step-5-view-your-live-site"><strong>Step 5: View Your Live Site</strong></h3>
+<p>Once deployment finishes, you’ll get a public URL like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://master.d1234abcd.amplifyapp.com
+</code></pre></div></div>
+
+<p>You can customize the domain by attaching a custom domain in the Amplify Console (e.g., <code class="language-plaintext highlighter-rouge">www.myapp.com</code>).</p>
+
+<h2 id="bonus-add-a-custom-domain">Bonus: Add a Custom Domain</h2>
+<p>To attach your domain:</p>
+<ol>
+  <li>Go to the Amplify Console.</li>
+  <li>Select your app → <strong>“Hosting”</strong> → <strong>“Custom Domains”</strong></li>
+  <li>Add your domain (e.g., from Route53 or any registrar).</li>
+  <li>Amplify will configure DNS and SSL for free.</li>
+</ol>]]></content><author><name></name></author><category term="infrastructure" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/2025-08-01-deploying-to-aws-amplify/aws-amplify-next.png" /><media:content medium="image" url="https://dkarim.com/assets/images/2025-08-01-deploying-to-aws-amplify/aws-amplify-next.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">From Evernote to Obsidian</title><link href="https://dkarim.com/from-evernote-to-obsidian/" rel="alternate" type="text/html" title="From Evernote to Obsidian" /><published>2025-04-14T00:00:00-04:00</published><updated>2025-04-14T00:00:00-04:00</updated><id>https://dkarim.com/from-evernote-to-obsidian</id><content type="html" xml:base="https://dkarim.com/from-evernote-to-obsidian/"><![CDATA[<p><img src="/assets/images/2025-04-14-from-evernote-to-obsidian/evernote-obsidian.png" alt="" style="border-radius: 20px;" /></p>
 
 <h2 id="introduction">Introduction</h2>
 
