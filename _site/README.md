@@ -20,3 +20,4 @@ Reference: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 ```bash
 jekyll build
 ```
+After the build, do a commit and push of all files, including any files that have been built and generated on the _site directory.
