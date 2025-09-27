@@ -31,6 +31,7 @@ github_username:  davidkarim
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
 
 # Google Analytics
 google_analytics: G-65S33QFVB0  # Replace with your actual tracking ID
