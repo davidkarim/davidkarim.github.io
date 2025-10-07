@@ -71,7 +71,7 @@ git push -u origin master
 ```
 
 ### **Step 2: Log into the AWS Amplify Console**
-Go to the [AWS Amplify Console](https://console.aws.amazon.com/amplify/home) and click **"Create New App".
+Go to the [AWS Amplify Console](https://console.aws.amazon.com/amplify/home) and click **"Create New App"**.
 
 ![](/assets/images/2025-08-01-deploying-to-aws-amplify/amplify-first-step.png){: style="border-radius: 20px;"}
 ### **Step 3: Connect Your Git Repository**
