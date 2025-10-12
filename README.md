@@ -18,6 +18,8 @@ Reference: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 #### To build and output the static site:
 ```bash
+# If you forget to build, the files may show canonical of localhost which would have been 
+# generated due to jekyll serve command for local development.
 jekyll build
 ```
 After the build, do a commit and push of all files, including any files that have been built and generated on the _site directory.

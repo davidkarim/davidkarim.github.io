@@ -2,14 +2,14 @@
 layout: post
 title: Folder Automation on a Mac Using Automator
 date: 2025-10-11
-image: /assets/images/2025-10-11-folder-automation-on-mac/automator-abstract.jpg
+image: /assets/images/2025-10-11-folder-automation-on-mac/automator-robot.jpg
 categories:
   - instructional
 tags:
   - in-progress
 ---
 
-![](/assets/images/2025-10-11-folder-automation-on-mac/automator-abstract.jpg){: style="border-radius: 20px;"}
+![](/assets/images/2025-10-11-folder-automation-on-mac/automator-robot.jpg){: style="border-radius: 20px;"}
 
 # Introduction
 
