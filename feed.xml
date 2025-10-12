@@ -1,4 +1,86 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-10-07T14:06:57+00:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Changing DNS Service Providers</title><link href="https://dkarim.com/changing-dns-service-providers/" rel="alternate" type="text/html" title="Changing DNS Service Providers" /><published>2025-09-25T00:00:00+00:00</published><updated>2025-09-25T00:00:00+00:00</updated><id>https://dkarim.com/changing-dns-service-providers</id><content type="html" xml:base="https://dkarim.com/changing-dns-service-providers/"><![CDATA[<p><img src="/assets/images/2025-09-25-changing-dns-service-providers/dns-abstract.png" alt="" style="border-radius: 20px;" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-10-12T05:59:13+00:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Folder Automation on a Mac Using Automator</title><link href="https://dkarim.com/folder-automation-on-mac/" rel="alternate" type="text/html" title="Folder Automation on a Mac Using Automator" /><published>2025-10-11T00:00:00+00:00</published><updated>2025-10-11T00:00:00+00:00</updated><id>https://dkarim.com/folder-automation-on-mac</id><content type="html" xml:base="https://dkarim.com/folder-automation-on-mac/"><![CDATA[<p><img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-abstract.jpg" alt="" style="border-radius: 20px;" /></p>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>We will be using ImageMagick and the Mac Automator to help us more easily do a common image conversion task. This can be useful if you commonly need to reduce image sizes for publishing to the web or for doing common conversions from one file type to another. The end result will be a process where you can simply drop a file in a folder and it will automatically do the conversion.</p>
+
+<p>We will be using <a href="https://imagemagick.org/">ImageMagick</a> to process the files and a custom script to run it.</p>
+
+<h2 id="steps">Steps</h2>
+
+<ul>
+  <li>Install ImageMagick:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>imagemagick
+
+<span class="c"># Confirm that magick command works</span>
+magick <span class="nt">-help</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Next, using the Mac Finder, create a folder for your automation. Let’s call it <code class="language-plaintext highlighter-rouge">image_edit</code>. Inside of the <code class="language-plaintext highlighter-rouge">image_edit</code> folder, create an <code class="language-plaintext highlighter-rouge">input</code> and an <code class="language-plaintext highlighter-rouge">output</code> folder. The automation will run when we drop a file in the <code class="language-plaintext highlighter-rouge">input</code> folder, and the automation will then place the edited file in the <code class="language-plaintext highlighter-rouge">output</code> folder.</li>
+  <li>Use Spotlight Search (Command-Space) to find Automator.</li>
+  <li>
+    <p>Once opened, select File / New and then select folder action
+<img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-folder-action.png" alt="" /></p>
+  </li>
+  <li>Find the dropdown at the top labeled <strong>Folder Action receives files and folders added to</strong>. Use the dropdown to select the <code class="language-plaintext highlighter-rouge">input</code> folder that was created.</li>
+  <li>
+    <p>In the search field, type shell to easily find the <strong>Run Shell Script</strong> action. Drag it over to the Main section of the window.
+<img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-run-shell-script.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Keep the Shell as <code class="language-plaintext highlighter-rouge">/bin/zsh</code> and change the Pass input to <code class="language-plaintext highlighter-rouge">as arguments</code>. At this stage, the automator may show an example script within the action as shown:
+<img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-sample-action.png" alt="" /></p>
+  </li>
+  <li>Create a shell script in the <code class="language-plaintext highlighter-rouge">image_edit</code> folder that will edit the image. In our case, we will have the script run ImageMagick on the image to have it with a specific quality and dimension, and to have it standardized as a JPG. Regardless of the format you drop in the folder, ImageMagick will attempt to make the adjustments and save the file as a JPG.</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+
+<span class="c"># The variable '$f' will hold the path to the file that was added.</span>
+<span class="k">for </span>f <span class="k">in</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+<span class="k">do</span>
+	<span class="c"># Add echo command to validate the automation is running</span>
+    <span class="nb">echo</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">: New file added: </span><span class="nv">$f</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/Documents/folder_action_log.txt
+
+    <span class="c"># Get the base filename without the extension</span>
+    <span class="nv">filename</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span><span class="si">)</span>
+    <span class="nv">name_no_ext</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">filename</span><span class="p">%.*</span><span class="k">}</span><span class="s2">"</span>
+    <span class="nv">output_file</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/Documents/Scripts/image_edit/output/</span><span class="k">${</span><span class="nv">name_no_ext</span><span class="k">}</span><span class="s2">.jpg"</span>
+
+	<span class="c"># Use more echo commands for troubleshooting only</span>
+    <span class="nb">echo</span> <span class="s2">"output_file: </span><span class="nv">$output_file</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/Documents/folder_action_log.txt
+    <span class="nb">echo</span> <span class="s2">"name_no_ext: </span><span class="nv">$name_no_ext</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/Documents/folder_action_log.txt
+    <span class="nb">echo</span> <span class="s2">"filename: </span><span class="nv">$filename</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/Documents/folder_action_log.txt
+
+	<span class="c"># Run ImageMagick with desired options and delete original file</span>
+    /opt/homebrew/bin/magick <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span> <span class="nt">-strip</span> <span class="nt">-quality</span> 90 <span class="nt">-resize</span> 1024x628<span class="se">\&gt;</span> <span class="s2">"</span><span class="nv">$output_file</span><span class="s2">"</span>
+    <span class="nb">rm</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span>
+
+<span class="k">done</span>
+</code></pre></div></div>
+
+<ul>
+  <li>After the shell script has been created, you can now tell Automator where the script is located and add a placeholder for the arguments. Automator will use the full file name (using a full path) for the argument. Example:</li>
+</ul>
+
+<p><img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-resize-image.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>In  the Finder, go to the <code class="language-plaintext highlighter-rouge">input</code> folder and select Services and then Folder Actions Setup.
+<img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-folder-actions.png" alt="" /></p>
+  </li>
+  <li>Select Run Service if a pop up appears.</li>
+  <li>Choose a script to attach. Attach the script from the list shown.</li>
+  <li>You should see the folder name and the script name in the Folder Actions Setup window.</li>
+</ul>
+
+<h2 id="test-and-troubleshoot">Test and Troubleshoot</h2>
+
+<p>Test the automation by dropping an image in the input folder. You should see a new file created in the output folder and the input folder file should disappear. Notice that the sample script provided will use echo commands to send output to a file. This can be very helpful during testing to make sure that the script is running properly. You may want to remove those commands once the script is working properly to avoid having a huge log file.</p>]]></content><author><name></name></author><category term="instructional" /><category term="in-progress" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/2025-10-11-folder-automation-on-mac/automator-abstract.jpg" /><media:content medium="image" url="https://dkarim.com/assets/images/2025-10-11-folder-automation-on-mac/automator-abstract.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Changing DNS Service Providers</title><link href="https://dkarim.com/changing-dns-service-providers/" rel="alternate" type="text/html" title="Changing DNS Service Providers" /><published>2025-09-25T00:00:00+00:00</published><updated>2025-09-25T00:00:00+00:00</updated><id>https://dkarim.com/changing-dns-service-providers</id><content type="html" xml:base="https://dkarim.com/changing-dns-service-providers/"><![CDATA[<p><img src="/assets/images/2025-09-25-changing-dns-service-providers/dns-abstract.png" alt="" style="border-radius: 20px;" /></p>
 
 <h1 id="changing-dns-service-providers">Changing DNS Service Providers</h1>
 
