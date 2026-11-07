@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2025-10-12T06:21:45+00:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Folder Automation on a Mac Using Automator</title><link href="https://dkarim.com/folder-automation-on-mac/" rel="alternate" type="text/html" title="Folder Automation on a Mac Using Automator" /><published>2025-10-11T00:00:00+00:00</published><updated>2025-10-11T00:00:00+00:00</updated><id>https://dkarim.com/folder-automation-on-mac</id><content type="html" xml:base="https://dkarim.com/folder-automation-on-mac/"><![CDATA[<p><img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-robot.jpg" alt="" style="border-radius: 20px;" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2026-11-07T06:10:22+00:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Running OpenClaw on a Cloud Node</title><link href="https://dkarim.com/openclaw-on-a-cloud-node/" rel="alternate" type="text/html" title="Running OpenClaw on a Cloud Node" /><published>2026-04-02T00:00:00+00:00</published><updated>2026-04-02T00:00:00+00:00</updated><id>https://dkarim.com/openclaw-on-a-cloud-node</id><content type="html" xml:base="https://dkarim.com/openclaw-on-a-cloud-node/"><![CDATA[<p><img src="/assets/images/2026-04-02-openclaw-on-a-cloud-node/openclaw-cloud-header.png" alt="" style="border-radius: 20px;" /></p>
+
+<h1 id="openclaw">OpenClaw</h1>
+<p>OpenClaw is an open-source AI assistant framework that runs on infrastructure you control. Instead of depending on a hosted AI agent service, you can deploy it on a small VPS and keep your models, tools, and data flow closer to your own environment.</p>
+
+<p>In this post, I will focus on a practical question: why run OpenClaw on a cloud node, and what does a minimal secure setup look like on a low-cost VPS such as Hetzner or AWS Lightsail?</p>
+
+<h2 id="why-run-it-on-a-cloud-node">Why run it on a cloud node?</h2>
+
+<p>Running OpenClaw on a VPS is useful if you want:</p>
+<ul>
+  <li><strong>Always-on availability</strong>: Your assistant stays online even when your laptop is closed.</li>
+  <li><strong>Stable network reachability</strong>: Easier remote access, webhooks, and gateway access than on a home network.</li>
+  <li><strong>Separation from your daily machine</strong>: Agent tooling, logs, and automations live on a dedicated host.</li>
+  <li><strong>Predictable cost</strong>: A small instance is often enough for a personal agent, especially if inference happens through external model APIs.</li>
+</ul>
+
+<h2 id="what-is-openclaw">What is OpenClaw?</h2>
+
+<p>OpenClaw is a personal AI agent platform built for developers and power users. Key traits:</p>
+<ul>
+  <li><strong>Self-hosted</strong>: Runs on your hardware (laptop, server, Raspberry Pi, or cloud node).</li>
+  <li><strong>Messaging integrations</strong>: Can connect to services like WhatsApp, Telegram, Discord, Slack, and others through its gateway and integrations.</li>
+  <li><strong>Agentic</strong>: Supports subagents, tools (file ops, shell exec, web search), skills (plugins for GitHub, calendars, etc.), and persistent memory.</li>
+  <li><strong>Model-agnostic</strong>: Works with hosted and local models, depending on your provider setup.</li>
+  <li><strong>Open-source</strong>: <a href="https://github.com/openclaw/openclaw">GitHub repo</a> with a large and active community.</li>
+</ul>
+
+<p>It’s not just a chatbot; it’s an extensible system for automation, with heartbeats for proactivity, cron jobs, and community skills.</p>
+
+<h2 id="what-can-it-do">What Can It Do?</h2>
+
+<p>OpenClaw shines in real-world automation:</p>
+<ul>
+  <li><strong>Task automation</strong>: Clear inboxes, manage calendars (gcalcli), send emails, check flights.</li>
+  <li><strong>Development workflows</strong>: GitHub issues/PRs (skills like gh-issues), code review, CI monitoring.</li>
+  <li><strong>Research &amp; content</strong>: Web search, image gen/analysis, note-taking (Obsidian publish).</li>
+  <li><strong>System ops</strong>: Shell access (safe exec), file management, tmux control.</li>
+  <li><strong>Proactive</strong>: Heartbeats check emails/calendar/weather; subagents for parallel tasks.</li>
+  <li><strong>Voice/media</strong>: TTS, image handling, voice notes transcription.</li>
+</ul>
+
+<p>Examples: “Ship checklist” can become an automated deployment checklist, or you can spawn subagents for parallel work across multiple repos.</p>
+
+<h2 id="security-considerations">Security Considerations</h2>
+
+<p>Self-hosting improves control, but it also means you own the operational risk:</p>
+<ul>
+  <li><strong>Minimal exposure</strong>: Prefer loopback-only binding plus Tailscale or another private access layer instead of opening the gateway publicly.</li>
+  <li><strong>Secrets handling</strong>: Store API keys carefully and keep them out of shell history, screenshots, and public dotfiles.</li>
+  <li><strong>Exec safety</strong>: Treat shell and file tools as privileged capabilities. Keep approval requirements in place for destructive or elevated commands.</li>
+  <li><strong>Firewalling</strong>: Allow only what you need, ideally SSH and your private networking layer.</li>
+  <li><strong>Updates</strong>: Stay current with OpenClaw and its runtime requirements.</li>
+  <li><strong>Isolation</strong>: Run as a non-root user and keep the workspace scoped to what the agent actually needs.</li>
+  <li><strong>Plugin hygiene</strong>: Review skills and plugins before enabling them on a machine with real data.</li>
+</ul>
+
+<p>The main risks are straightforward: prompt injection, accidental over-permissioning, and exposing an interface to the public internet without enough access control.</p>
+
+<h2 id="practical-setup-on-hetzner-or-aws-lightsail">Practical Setup on Hetzner or AWS Lightsail</h2>
+
+<ol>
+  <li><strong>Provision node</strong>:
+    <ul>
+      <li>Hetzner: a small shared vCPU instance with Ubuntu 24.04 is enough to start.</li>
+      <li>Lightsail: a small Ubuntu instance is also fine for a personal deployment.</li>
+      <li>Create a non-root user and use SSH keys.</li>
+    </ul>
+  </li>
+  <li><strong>Secure basics</strong>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install ufw curl -y
+sudo ufw default deny incoming
+sudo ufw allow ssh
+sudo ufw --force enable
+# Disable root SSH, password auth in /etc/ssh/sshd_config
+sudo systemctl restart ssh
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Install Node &amp; OpenClaw</strong>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -fsSL https://openclaw.ai/install.sh | bash
+openclaw onboard --install-daemon
+</code></pre></div>    </div>
+    <p>OpenClaw currently recommends Node 24, with Node 22.16+ also supported if you are installing through npm instead of the installer script.</p>
+  </li>
+  <li><strong>Configure &amp; pair</strong>:
+    <ul>
+      <li>Pair the channels you actually use, such as WhatsApp or Telegram.</li>
+      <li>Set your model provider and workspace during onboarding.</li>
+      <li>Test: <code class="language-plaintext highlighter-rouge">openclaw agent --message "Hello from cloud!"</code>.</li>
+    </ul>
+  </li>
+  <li><strong>Remote access</strong> (optional):
+    <ul>
+      <li>Tailscale is a good fit if you want private remote access without exposing the gateway directly to the internet.</li>
+      <li>Keep the gateway bound to loopback where possible and let Tailscale handle access.</li>
+    </ul>
+  </li>
+  <li><strong>Monitor</strong>: <code class="language-plaintext highlighter-rouge">openclaw doctor</code>, <code class="language-plaintext highlighter-rouge">journalctl -u openclaw</code> (systemd).</li>
+</ol>
+
+<p>At that point you have an always-on OpenClaw node with a cleaner separation between your assistant runtime and your personal machine.</p>]]></content><author><name></name></author><category term="instructional" /><category term="self-hosting" /><category term="vps" /><category term="ai-agents" /><category term="OpenClaw" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/2026-04-02-openclaw-on-a-cloud-node/openclaw-cloud-header.png" /><media:content medium="image" url="https://dkarim.com/assets/images/2026-04-02-openclaw-on-a-cloud-node/openclaw-cloud-header.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Folder Automation on a Mac Using Automator</title><link href="https://dkarim.com/folder-automation-on-mac/" rel="alternate" type="text/html" title="Folder Automation on a Mac Using Automator" /><published>2025-10-11T00:00:00+00:00</published><updated>2025-10-11T00:00:00+00:00</updated><id>https://dkarim.com/folder-automation-on-mac</id><content type="html" xml:base="https://dkarim.com/folder-automation-on-mac/"><![CDATA[<p><img src="/assets/images/2025-10-11-folder-automation-on-mac/automator-robot.jpg" alt="" style="border-radius: 20px;" /></p>
 
 <h1 id="introduction">Introduction</h1>
 
@@ -625,10 +726,4 @@ gem <span class="nb">install </span>bundler:2.5.7
 
 <p>I used a templating app called Mobirise to help with the layout and then finished off the HTML by hand. I have also added several integrations with the Dental Office management platform to help schedule patients through the site directly.</p>
 
-<p>The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">WordPress Migration</title><link href="https://dkarim.com/wordpress-migration/" rel="alternate" type="text/html" title="WordPress Migration" /><published>2024-11-01T12:00:00+00:00</published><updated>2024-11-01T12:00:00+00:00</updated><id>https://dkarim.com/wordpress-migration</id><content type="html" xml:base="https://dkarim.com/wordpress-migration/"><![CDATA[<p><img src="/assets/images/saintjohn.jpg" alt="Alt text for the image" style="float: left; width: 400px; margin-right: 25px; margin-bottom: 10px;" /></p>
-
-<p>The Saint John website originally existed as a WordPress site that had not been updated in several years. The parish had attempted to create a more updated website but was trying to implement it using pure HTML and CSS without considering other factors. For example, they already had a company which provided WordPress hosting for them and would likely have difficulties changing their deployment, backup, and support processes. The church did not want to take on another provider or any additional expense.</p>
-
-<p>I suggested to them that they could continue to use WordPress, but that it would likely be best to create a new site using more modern templates. I created a temporary WordPress server to create an initial mockup we could work with. After getting the main page and the menu structure in place, I had the hosting provider spin up a new WordPress site and I migrated the site over to their server while continuing to have the public DNS point to the old website.</p>
-
-<p>Once the church was satisfied with the new site, we had the provider update the DNS to make the site go live. The new site implements features such as a Calendar of Events, announcements banner, and a background video which I recorded using a DJI drone. The finished product can be seen here: <a href="https://saintjohn-bocaraton.com" target="_blank" rel="noopener noreferrer">Saint John</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry></feed>
+<p>The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry></feed>
