@@ -1,4 +1,430 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2026-11-07T01:07:30-05:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">Running OpenClaw on a Cloud Node</title><link href="https://dkarim.com/openclaw-on-a-cloud-node/" rel="alternate" type="text/html" title="Running OpenClaw on a Cloud Node" /><published>2026-04-02T00:00:00-04:00</published><updated>2026-04-02T00:00:00-04:00</updated><id>https://dkarim.com/openclaw-on-a-cloud-node</id><content type="html" xml:base="https://dkarim.com/openclaw-on-a-cloud-node/"><![CDATA[<p><img src="/assets/images/2026-04-02-openclaw-on-a-cloud-node/openclaw-cloud-header.png" alt="" style="border-radius: 20px;" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://dkarim.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://dkarim.com/" rel="alternate" type="text/html" /><updated>2026-11-08T00:47:37-05:00</updated><id>https://dkarim.com/feed.xml</id><title type="html">David Karim - DevOps Engineer</title><subtitle>I am a professional with over 20 years of experience in the field of tech and telecommunications.</subtitle><entry><title type="html">OAuth, Authentication vs Authorization, and Google Login in Next.js</title><link href="https://dkarim.com/oauth-authentication-vs-authorization-and-google-login-in-nextjs/" rel="alternate" type="text/html" title="OAuth, Authentication vs Authorization, and Google Login in Next.js" /><published>2026-11-08T00:00:00-05:00</published><updated>2026-11-08T00:00:00-05:00</updated><id>https://dkarim.com/oauth-authentication-vs-authorization-and-google-login-in-nextjs</id><content type="html" xml:base="https://dkarim.com/oauth-authentication-vs-authorization-and-google-login-in-nextjs/"><![CDATA[<p><img src="/assets/images/2026-11-08-oauth-authentication-vs-authorization-and-google-login-in-nextjs/header.jpg" alt="" style="border-radius: 20px;" /></p>
+
+<p>Login, OAuth, authentication, and authorization get used as if they mean the same thing. They do not, and treating them as one idea is how you end up with an app that can sign someone in but has no clear answer for what that person is allowed to do.</p>
+
+<p>In this post I will cover the concepts first, then the practical piece:</p>
+
+<ul>
+  <li>What authentication and authorization actually mean</li>
+  <li>What OAuth is, what it is not, and how OpenID Connect fits in</li>
+  <li>What roles Okta and Google play</li>
+  <li>Which library I would use to add Google Login to a Next.js app</li>
+  <li>How to set that integration up, including the operational details that usually cause the first outage</li>
+</ul>
+
+<p>If you are about to drop a “Sign in with Google” button into a Next.js app, it helps to know what that button is doing before you copy a snippet into <code class="language-plaintext highlighter-rouge">app/</code>.</p>
+
+<hr />
+
+<h2 id="authentication-vs-authorization">Authentication vs authorization</h2>
+
+<p><strong>Authentication</strong> answers one question: who is this?</p>
+
+<p><strong>Authorization</strong> answers a different question: what is this person allowed to do?</p>
+
+<p>A familiar ops example is a Linux box. Logging in with your SSH key is authentication. The server now knows which user you are. Being listed in <code class="language-plaintext highlighter-rouge">sudoers</code>, having access to a particular database role, or being allowed through a security group is authorization. You can authenticate successfully and still be denied the action you wanted.</p>
+
+<p>The same split shows up everywhere:</p>
+
+<ul>
+  <li>A badge getting you through the front door is authentication. The badge reader on the server room is authorization.</li>
+  <li>A valid AWS console login is authentication. An IAM policy that allows <code class="language-plaintext highlighter-rouge">s3:GetObject</code> on one bucket and denies everything else is authorization.</li>
+  <li>A valid session cookie in a web app means the app knows who you are. A role, group, feature flag, or ownership check decides whether you can see a customer record or trigger a deploy.</li>
+</ul>
+
+<p>People shorten both of these to “auth,” which is where the confusion starts. In conversation that shorthand is fine. In a system design it is not. If you only implement authentication, every signed-in user looks the same. If you only think about authorization, you have no reliable way to know who the actor is.</p>
+
+<p>A few consequences that matter in real applications:</p>
+
+<ul>
+  <li>Authentication should happen as little as you can get away with. The user proves who they are, you establish a session, and you reuse that session.</li>
+  <li>Authorization should happen often. Every protected page, API route, and server action needs to ask whether <em>this</em> user can do <em>this</em> thing.</li>
+  <li>A successful login is not a permission grant. “They signed in with Google” does not mean they should see admin pages, other users’ data, or Google Drive files they never agreed to share.</li>
+</ul>
+
+<p>When someone says “we need to add auth,” it is worth asking which half they mean. Sometimes they want a login button. Sometimes they want SSO for employees. Sometimes they want fine-grained permissions. Those are different designs.</p>
+
+<hr />
+
+<h2 id="what-oauth-actually-is">What OAuth actually is</h2>
+
+<p><a href="https://oauth.net/2/">OAuth 2.0</a> is an <strong>authorization</strong> framework. It exists so a user can grant your application limited access to an account they already have, without giving you their password.</p>
+
+<p>That last part is the original point. Before OAuth, a third-party app that needed access to your Google data would ask for your Google password. That is a terrible design. OAuth replaces “give me your password” with “send the user to Google, let Google ask for consent, then give the app a token that only covers what the user approved.”</p>
+
+<p>OAuth has a few standard roles, and the names are worth knowing because they show up in every provider’s docs:</p>
+
+<ul>
+  <li>The <strong>resource owner</strong> is the user.</li>
+  <li>The <strong>client</strong> is your application.</li>
+  <li>The <strong>authorization server</strong> is the system that authenticates the user and issues tokens. For Google Login, this is Google. For a company SSO setup, it is often Okta.</li>
+  <li>The <strong>resource server</strong> is the API being accessed. That might be Gmail or Drive, or it might be your own API if you are validating tokens yourself.</li>
+</ul>
+
+<h3 id="the-authorization-code-flow">The authorization code flow</h3>
+
+<p>The flow you should use for a server-side Next.js app is the authorization code flow.</p>
+
+<ol>
+  <li>The user clicks “Sign in with Google” in your app.</li>
+  <li>Your app redirects them to Google, along with your client ID, a redirect URI, and the scopes you want.</li>
+  <li>Google authenticates the user if they are not already signed in. That step is authentication, and it happens on Google’s side, not in your app.</li>
+  <li>Google shows a consent screen if needed, so the user can approve what your app is asking for.</li>
+  <li>Google redirects the user back to your app with a short-lived <strong>authorization code</strong>.</li>
+  <li>Your server exchanges that code for tokens, using your client secret. This exchange happens server-to-server, which is why the user’s browser never needs to see the client secret.</li>
+  <li>Your app receives tokens and can now either create a local session, call a Google API, or both.</li>
+</ol>
+
+<p>If you have been around long enough, you may remember the implicit flow, where tokens were returned directly in the URL fragment. Do not use that. The authorization code flow is the current standard, and public clients should also use <a href="https://oauth.net/2/pkce/">PKCE</a> so an intercepted code cannot be exchanged by someone else. A Next.js app with a server-side route handler is a confidential client because it can keep a client secret. You should still treat that secret like any other production credential.</p>
+
+<h3 id="what-the-tokens-mean">What the tokens mean</h3>
+
+<ul>
+  <li>An <strong>access token</strong> is authorization. It lets your app call an API within the scopes the user approved. It is usually short-lived.</li>
+  <li>A <strong>refresh token</strong> lets your app request a new access token later without sending the user through the consent screen every time. Google typically issues a refresh token only the first time the user consents, unless you force a new consent prompt.</li>
+  <li>An <strong>ID token</strong> comes from <a href="https://openid.net/connect/">OpenID Connect (OIDC)</a>, which sits on top of OAuth 2.0. The ID token is a signed assertion of identity: subject identifier, email, name, and similar claims. That is how a Google sign-in becomes authentication for <em>your</em> app, not just permission to call Google’s APIs.</li>
+</ul>
+
+<p>This distinction matters. If you only needed to read a user’s Google Calendar, you would care about OAuth scopes and an access token. If you need a logged-in session in your own Next.js app, you care about the identity information and how you turn that into a session you control.</p>
+
+<h3 id="scopes-are-authorization-decisions">Scopes are authorization decisions</h3>
+
+<p>Scopes are the permissions your app is requesting. They are easy to treat as a boilerplate list, but they are an authorization decision the user has to approve.</p>
+
+<p>For Google Login, the identity scopes are usually enough:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openid</code></li>
+  <li><code class="language-plaintext highlighter-rouge">email</code></li>
+  <li><code class="language-plaintext highlighter-rouge">profile</code></li>
+</ul>
+
+<p>That combination tells Google you want to know who the user is. It does not give you access to Gmail, Drive, Calendar, or anything else in their Google account.</p>
+
+<p>If your app later needs Drive access, that is a separate authorization request. Do not bake <code class="language-plaintext highlighter-rouge">https://www.googleapis.com/auth/drive.file</code> into the original login just because you might want it someday. Users are more likely to abandon a consent screen that asks for more than the app is obviously doing, and you should not be holding unused grants.</p>
+
+<h3 id="what-oauth-is-not">What OAuth is not</h3>
+
+<p>A few things OAuth is often mistaken for:</p>
+
+<ul>
+  <li>It is not a login protocol by itself. Login is the OIDC layer on top, or a session your app creates after it trusts the identity token.</li>
+  <li>It is not a permissions system for your own application data. Google can tell you who the user is, and it can authorize access to Google APIs. It does not know whether that user should edit invoice 123 in your database.</li>
+  <li>It does not replace session handling. After the callback, you still need a session, cookie, or token strategy in your own app.</li>
+  <li>It does not mean you should store Google access tokens in localStorage or log them. Treat them like secrets.</li>
+</ul>
+
+<p>Two operational details that cause most first-time failures:</p>
+
+<ul>
+  <li>Redirect URIs must match exactly, including scheme, host, path, and trailing slash. Google will reject the request with <code class="language-plaintext highlighter-rouge">redirect_uri_mismatch</code> if they do not.</li>
+  <li>Client secrets belong on the server, in environment variables, not in frontend code or git.</li>
+</ul>
+
+<hr />
+
+<h2 id="where-okta-and-google-fit">Where Okta and Google fit</h2>
+
+<p>Google and Okta can both act as an identity provider. In an OAuth/OIDC flow, your app does not collect the user’s password. It redirects the user to the provider, the provider authenticates them, and your app receives tokens it can verify.</p>
+
+<p>They overlap, but they are usually used for different jobs.</p>
+
+<h3 id="google">Google</h3>
+
+<p>For most public apps, Google means <strong>Sign in with Google</strong>. The user already has a Google account. Your app does not want to store another password. Google authenticates the user and returns identity information through OIDC. If you requested API scopes, Google also returns access tokens that authorize calls to those Google APIs.</p>
+
+<p>Google also appears in company environments through Google Workspace. In that case Google is still the identity provider, but the accounts belong to the organization. You can restrict sign-in to a Workspace domain, which is useful for internal tools. That restriction is an authorization policy sitting on top of Google authentication: “they must be a Google user, and they must belong to this domain.”</p>
+
+<p>So Google can play two related roles:</p>
+
+<ul>
+  <li>As an identity provider, it answers who the user is.</li>
+  <li>As an authorization server for Google APIs, it answers whether your app may call Gmail, Drive, Calendar, and similar services on that user’s behalf.</li>
+</ul>
+
+<p>What Google does not do, at least not by default, is manage the permissions inside your product. It will not tell you who an admin is in your SaaS app, which tenants they belong to, or whether they can approve a payroll run.</p>
+
+<h3 id="okta">Okta</h3>
+
+<p>Okta is usually the enterprise identity layer. Companies use it for workforce SSO, MFA, user lifecycle, and deciding which applications a person can open. In that setup, employees do not sign into each internal tool separately. They sign into Okta, and Okta issues tokens your apps trust.</p>
+
+<p>Okta can authenticate users itself with a password plus MFA, passwordless options, or similar. It can also federate to another provider, including Google. That is a common pattern: the employee clicks into an internal app, lands on Okta, and Okta may then send them to Google Workspace to prove who they are. From your app’s point of view, Okta is still the identity provider. Your app should validate Okta’s tokens, not talk to Google directly.</p>
+
+<p>On the authorization side, Okta is often the source of truth for groups, roles, and application assignments. A user might be in an <code class="language-plaintext highlighter-rouge">engineering</code> group and assigned to your app, or they might be authenticated but not assigned to that app at all. Okta can also act as an OAuth authorization server for your own APIs, issuing access tokens with scopes and claims your backend can enforce.</p>
+
+<p>Okta also has a customer-identity side, where it provides login, social identity, and related features for an application’s end users rather than employees. The same building blocks show up there: authentication at Okta, tokens for your app, and policies for who can access what.</p>
+
+<h3 id="how-to-choose">How to choose</h3>
+
+<p>A simple way to think about it:</p>
+
+<ul>
+  <li>If you are building a public or customer-facing Next.js app and you want low-friction login, Google Login is a common fit. The user already has an account, and you do not need to become a password database on day one.</li>
+  <li>If you are building an internal or enterprise app and the company already lives in Okta, Okta should be the identity provider. Users may still reach Okta via Google, but your app should trust Okta.</li>
+  <li>You can use both. Okta can sit in front as the SSO broker, with Google as one of the ways a user proves who they are.</li>
+  <li>If you need Google API access, that is a Google OAuth problem even if login itself goes through Okta. Those are separate grants.</li>
+</ul>
+
+<p>Neither product replaces the original distinction. Google or Okta can authenticate someone. Your application still has to decide what that person is authorized to do once they are in. Sometimes that decision is as simple as “any signed-in user can see their own dashboard.” Sometimes it is groups from Okta, a role stored in your database, or an email-domain check. Make that decision explicit.</p>
+
+<hr />
+
+<h2 id="which-library-i-would-use-in-nextjs">Which library I would use in Next.js</h2>
+
+<p>For a new Next.js app that needs Google Login, I would use <a href="https://www.better-auth.com/">Better Auth</a>.</p>
+
+<p>For a long time, the default answer was NextAuth.js, later renamed Auth.js. It still works, and if you already have it in production there is no reason to rip it out just to chase a newer name. The Auth.js project is now maintained by the Better Auth team, and they recommend starting new projects with Better Auth unless you have a specific gap.</p>
+
+<p>Why Better Auth is the better default today:</p>
+
+<ul>
+  <li>It is self-hosted and configured in code. That fits a DevOps workflow better than dropping in a hosted auth product before you need one.</li>
+  <li>Google is a built-in social provider, so you are not writing the OAuth handshake, token exchange, or callback handling by hand.</li>
+  <li>Users, sessions, and linked accounts live in a database you control.</li>
+  <li>The Next.js integration is small: a catch-all API route plus a client helper.</li>
+  <li>Features you often need later, such as additional social providers or stronger session handling, are already part of the same system instead of a pile of one-off packages.</li>
+</ul>
+
+<p>A few alternatives, if the requirements are different:</p>
+
+<ul>
+  <li><strong>Auth.js / NextAuth</strong> if the app already uses it and it is stable. Leave it alone until you have a concrete reason to migrate.</li>
+  <li><strong>Clerk</strong> or a similar hosted service if you want login working quickly and you are comfortable with user records living in someone else’s system.</li>
+  <li><strong>Okta’s own SDK</strong> if Okta is your identity provider. Do not run Google Login and Okta side by side as two sources of truth for the same users.</li>
+  <li><strong>Rolling your own OAuth client</strong> is possible, but you will spend time on redirect handling, CSRF, token storage, session cookies, and edge cases that a maintained library already covers. I would not start there unless I had a very specific constraint.</li>
+</ul>
+
+<p>The rest of this post assumes a new Next.js app that should sign users in with Google, using Better Auth.</p>
+
+<hr />
+
+<h2 id="how-to-add-google-login-to-a-nextjs-app">How to add Google Login to a Next.js app</h2>
+
+<p>This is the hands-on path I would take. The Google Cloud setup is where most of the friction is. The library code itself is fairly small.</p>
+
+<h3 id="step-1-configure-the-google-oauth-client">Step 1: Configure the Google OAuth client</h3>
+
+<p>In <a href="https://console.cloud.google.com/apis/credentials">Google Cloud Console</a>:</p>
+
+<ol>
+  <li>Create or select a project.</li>
+  <li>Configure the OAuth consent screen if you have not already. For a side project you can start in testing mode and add your own Google account as a test user. For an internal Workspace app, an internal consent screen avoids the external verification process.</li>
+  <li>Go to <strong>APIs &amp; Services</strong> → <strong>Credentials</strong>.</li>
+  <li>Create an <strong>OAuth client ID</strong> and choose <strong>Web application</strong>.</li>
+  <li>Add authorized JavaScript origins:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://localhost:3000</code></li>
+      <li><code class="language-plaintext highlighter-rouge">https://your-domain.com</code></li>
+    </ul>
+  </li>
+  <li>Add authorized redirect URIs:
+    <ul>
+      <li>Local: <code class="language-plaintext highlighter-rouge">http://localhost:3000/api/auth/callback/google</code></li>
+      <li>Production: <code class="language-plaintext highlighter-rouge">https://your-domain.com/api/auth/callback/google</code></li>
+    </ul>
+  </li>
+  <li>Copy the client ID and client secret.</li>
+</ol>
+
+<p>A few things that are easy to miss:</p>
+
+<ul>
+  <li>Localhost and production are different redirect URIs. You need both registered before you deploy, or production login will fail even though local login worked.</li>
+  <li>The path has to match what the library expects. Better Auth’s default callback is <code class="language-plaintext highlighter-rouge">/api/auth/callback/google</code>. If you change the auth base path, update Google Cloud to match.</li>
+  <li><code class="language-plaintext highlighter-rouge">http</code> versus <code class="language-plaintext highlighter-rouge">https</code> matters. So does <code class="language-plaintext highlighter-rouge">www</code> versus the apex domain. So does a trailing slash.</li>
+  <li>The client secret is a secret. Do not commit it, paste it into a frontend file, or drop it into a screenshot.</li>
+</ul>
+
+<p>If the redirect URI does not match, Google returns <code class="language-plaintext highlighter-rouge">redirect_uri_mismatch</code>. That error almost always means the callback your app is sending does not match what you registered, or <code class="language-plaintext highlighter-rouge">BETTER_AUTH_URL</code> is still pointing at localhost after deploy.</p>
+
+<h3 id="step-2-install-better-auth-and-set-environment-variables">Step 2: Install Better Auth and set environment variables</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install </span>better-auth better-sqlite3
+</code></pre></div></div>
+
+<p>SQLite is enough to prove the flow locally. Before you take this to production, switch to Postgres or whatever database you already run, using one of Better Auth’s adapters.</p>
+
+<p>Add the following to <code class="language-plaintext highlighter-rouge">.env</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BETTER_AUTH_SECRET</span><span class="o">=</span>  <span class="c"># openssl rand -base64 32</span>
+<span class="nv">BETTER_AUTH_URL</span><span class="o">=</span>http://localhost:3000
+<span class="nv">GOOGLE_CLIENT_ID</span><span class="o">=</span>
+<span class="nv">GOOGLE_CLIENT_SECRET</span><span class="o">=</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">BETTER_AUTH_SECRET</code> should be a long random value. You can generate one with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl rand <span class="nt">-base64</span> 32
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">BETTER_AUTH_URL</code> should be the public URL of the app. Locally that is <code class="language-plaintext highlighter-rouge">http://localhost:3000</code>. In production it should be your real HTTPS origin. Better Auth uses this value to construct the callback URL it sends to Google, so a wrong value here looks exactly like a misconfigured redirect URI.</p>
+
+<p>Keep these variables out of git. If you deploy to AWS Amplify, add them in the Amplify console for that app and environment rather than baking them into the build output. I wrote about deploying a Next.js app to Amplify separately; the important part here is that production needs its own <code class="language-plaintext highlighter-rouge">BETTER_AUTH_URL</code> and its own Google redirect URI.</p>
+
+<p>Then generate or apply the Better Auth schema:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx auth@latest migrate
+</code></pre></div></div>
+
+<p>Better Auth needs somewhere to store users, sessions, and the linked Google account. The migrate step creates that schema. If you are using an ORM adapter, use the generate flow from the Better Auth docs and review the migration before you apply it.</p>
+
+<h3 id="step-3-create-the-auth-config">Step 3: Create the auth config</h3>
+
+<p>Create <code class="language-plaintext highlighter-rouge">lib/auth.ts</code>:</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">betterAuth</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">better-auth</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">nextCookies</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">better-auth/next-js</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">Database</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">better-sqlite3</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">auth</span> <span class="o">=</span> <span class="nf">betterAuth</span><span class="p">({</span>
+  <span class="na">database</span><span class="p">:</span> <span class="k">new</span> <span class="nc">Database</span><span class="p">(</span><span class="dl">"</span><span class="s2">./sqlite.db</span><span class="dl">"</span><span class="p">),</span>
+  <span class="na">baseURL</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">BETTER_AUTH_URL</span><span class="p">,</span>
+  <span class="na">socialProviders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">google</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">clientId</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GOOGLE_CLIENT_ID</span> <span class="kd">as </span><span class="kr">string</span><span class="p">,</span>
+      <span class="na">clientSecret</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GOOGLE_CLIENT_SECRET</span> <span class="kd">as </span><span class="kr">string</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span><span class="nf">nextCookies</span><span class="p">()],</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>A few notes on that file:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">baseURL</code> is not optional in practice. If it is missing or still set to localhost in production, Google will reject the callback.</li>
+  <li><code class="language-plaintext highlighter-rouge">nextCookies()</code> should stay last in the plugin list so cookies are set correctly when you call auth methods from server actions.</li>
+  <li>This config only requests Google as a login provider. You are not asking for Drive, Gmail, or other Google API scopes yet.</li>
+</ul>
+
+<p>If you later need to force account selection every time, Better Auth lets you set <code class="language-plaintext highlighter-rouge">prompt: "select_account"</code> on the Google provider. That is useful on a shared machine, or when you are testing with more than one Google account.</p>
+
+<p>If this is an internal app and only one Workspace domain should be allowed in, set <code class="language-plaintext highlighter-rouge">hd</code> to that domain on the provider. That is an authorization rule: authenticated Google users outside the domain should not get a session.</p>
+
+<h3 id="step-4-mount-the-nextjs-route-handler">Step 4: Mount the Next.js route handler</h3>
+
+<p>Create <code class="language-plaintext highlighter-rouge">app/api/auth/[...all]/route.ts</code>:</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">auth</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@/lib/auth</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">toNextJsHandler</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">better-auth/next-js</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="p">{</span> <span class="nx">GET</span><span class="p">,</span> <span class="nx">POST</span> <span class="p">}</span> <span class="o">=</span> <span class="nf">toNextJsHandler</span><span class="p">(</span><span class="nx">auth</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This catch-all route is the callback endpoint Google redirects to, and it also handles the rest of the auth API. You generally want to leave it at <code class="language-plaintext highlighter-rouge">/api/auth/[...all]</code> unless you have a reason to change the base path. If you do change it, update the Google Cloud redirect URI and <code class="language-plaintext highlighter-rouge">BETTER_AUTH_URL</code> handling to match.</p>
+
+<h3 id="step-5-add-a-sign-in-with-google-button">Step 5: Add a Sign in with Google button</h3>
+
+<p>Create <code class="language-plaintext highlighter-rouge">lib/auth-client.ts</code>:</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAuthClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">better-auth/react</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">authClient</span> <span class="o">=</span> <span class="nf">createAuthClient</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Then a small client component:</p>
+
+<div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="dl">"</span><span class="s2">use client</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="p">{</span> <span class="nx">authClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@/lib/auth-client</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">GoogleSignInButton</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return </span><span class="p">(</span>
+    <span class="p">&lt;</span><span class="nt">button</span>
+      <span class="na">onClick</span><span class="p">=</span><span class="si">{</span><span class="p">()</span> <span class="o">=&gt;</span>
+        <span class="nx">authClient</span><span class="p">.</span><span class="nx">signIn</span><span class="p">.</span><span class="nf">social</span><span class="p">({</span>
+          <span class="na">provider</span><span class="p">:</span> <span class="dl">"</span><span class="s2">google</span><span class="dl">"</span><span class="p">,</span>
+        <span class="p">})</span>
+      <span class="si">}</span>
+    <span class="p">&gt;</span>
+      Sign in with Google
+    <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>When the user clicks the button, they are redirected to Google, they approve the login, and they come back to your app with a session. Signing out is the other half of that client:</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">authClient</span><span class="p">.</span><span class="nf">signOut</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>At this point you have the OAuth/OIDC round trip working: Google authenticated the user, your app received identity information, and Better Auth created a local session.</p>
+
+<h3 id="step-6-read-the-session-on-the-server">Step 6: Read the session on the server</h3>
+
+<p>Do not treat “there is a cookie” as proof that someone is signed in. Checking for a cookie is fine as a fast redirect hint, but any protected page or server action should validate the session on the server.</p>
+
+<div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">auth</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@/lib/auth</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">headers</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">next/headers</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">redirect</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">next/navigation</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="k">async</span> <span class="kd">function</span> <span class="nf">DashboardPage</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">session</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">auth</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nf">getSession</span><span class="p">({</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="k">await</span> <span class="nf">headers</span><span class="p">(),</span>
+  <span class="p">});</span>
+
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">session</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">redirect</span><span class="p">(</span><span class="dl">"</span><span class="s2">/sign-in</span><span class="dl">"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Welcome <span class="si">{</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>That check is authentication: is there a valid session, and who does it belong to? It is not yet authorization. Once you have <code class="language-plaintext highlighter-rouge">session.user</code>, you can add the rules that belong to your product:</p>
+
+<ul>
+  <li>Only users with an email on your company domain can continue.</li>
+  <li>Only users marked as admins can open <code class="language-plaintext highlighter-rouge">/admin</code>.</li>
+  <li>A user can only read rows that belong to their account or tenant.</li>
+</ul>
+
+<p>Those checks should live in the server code that performs the action, not only in the navigation UI. Hiding a button is not authorization.</p>
+
+<p>If you use Next.js middleware or, on newer versions, a proxy file to redirect anonymous users, treat that as an optimistic check. Better Auth’s own docs are explicit that looking at the session cookie is not a security boundary. Always validate the session again in the page, route handler, or server action.</p>
+
+<h3 id="step-7-keep-login-separate-from-google-api-access">Step 7: Keep login separate from Google API access</h3>
+
+<p>After login works, it is tempting to add more Google scopes to the same button. I would not do that by default.</p>
+
+<p>Login should ask for identity. Extra access should be requested when a feature actually needs it. Better Auth can request additional Google scopes later through <code class="language-plaintext highlighter-rouge">linkSocial</code>, for example if the user clicks “Connect Google Drive.” That triggers a new consent flow for those scopes instead of surprising people on day one.</p>
+
+<p>This is the OAuth-versus-login distinction again, in product form. Signing the user in is authentication. Reading their Drive files is authorization for a Google API, and it deserves its own consent.</p>
+
+<hr />
+
+<h2 id="what-done-looks-like-in-production">What “done” looks like in production</h2>
+
+<p>A local demo is not the same as a login system you can leave running. Before you call this finished, walk through the operational checklist:</p>
+
+<ul>
+  <li>Production redirect URIs are registered in Google Cloud, not just localhost.</li>
+  <li><code class="language-plaintext highlighter-rouge">BETTER_AUTH_URL</code> in production is the public HTTPS origin.</li>
+  <li><code class="language-plaintext highlighter-rouge">BETTER_AUTH_SECRET</code>, <code class="language-plaintext highlighter-rouge">GOOGLE_CLIENT_ID</code>, and <code class="language-plaintext highlighter-rouge">GOOGLE_CLIENT_SECRET</code> are set in the hosting environment and not checked into the repo.</li>
+  <li>The database is not a leftover SQLite file on a local disk. Use a real database, back it up, and run schema changes through your normal migration process.</li>
+  <li>HTTPS is required in production. OAuth callbacks and secure cookies depend on it.</li>
+  <li>You have tested sign-in, sign-out, and a second sign-in with the same Google account. The second visit should find the existing user rather than create a duplicate.</li>
+  <li>You have tested the failure path: canceling the Google consent screen should not leave the app in a broken state.</li>
+  <li>If the app is internal, confirm that accounts outside the allowed domain cannot get a session.</li>
+</ul>
+
+<p>If login works locally and fails after deploy, start with the callback URL. In my experience that is the first thing to inspect, before you assume the library is misbehaving.</p>
+
+<hr />
+
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>A short recap:</p>
+
+<ul>
+  <li>Authentication is who you are. Authorization is what you can do. A successful login only solves the first one.</li>
+  <li>OAuth is an authorization framework for delegated access. It lets a user grant your app limited access without sharing a password.</li>
+  <li>“Sign in with Google” uses OAuth plus OpenID Connect. The ID token is how Google tells your app who the user is. Access tokens and scopes are how Google authorizes API calls.</li>
+  <li>Google is a common identity provider for social login and Google Workspace, and it is also the authorization server for Google APIs. Okta is typically the enterprise SSO and policy layer. They can work together, but your app should have one source of truth for identity.</li>
+  <li>For a new Next.js app, I would use Better Auth, create a Google OAuth client, and add Google Login through Better Auth’s Google social provider. Then I would enforce authorization in the application itself.</li>
+</ul>
+
+<p>Once this is in place, the next useful step is deciding how permissions should work after login: an email-domain restriction, roles in your own database, or claims and groups from an identity provider such as Okta. That is a separate design from the login button, and it is the part most apps need to think about sooner than they expect.</p>]]></content><author><name></name></author><category term="instructional" /><category term="oauth" /><category term="authentication" /><category term="nextjs" /><category term="google" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/2026-11-08-oauth-authentication-vs-authorization-and-google-login-in-nextjs/header.jpg" /><media:content medium="image" url="https://dkarim.com/assets/images/2026-11-08-oauth-authentication-vs-authorization-and-google-login-in-nextjs/header.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Running OpenClaw on a Cloud Node</title><link href="https://dkarim.com/openclaw-on-a-cloud-node/" rel="alternate" type="text/html" title="Running OpenClaw on a Cloud Node" /><published>2026-04-02T00:00:00-04:00</published><updated>2026-04-02T00:00:00-04:00</updated><id>https://dkarim.com/openclaw-on-a-cloud-node</id><content type="html" xml:base="https://dkarim.com/openclaw-on-a-cloud-node/"><![CDATA[<p><img src="/assets/images/2026-04-02-openclaw-on-a-cloud-node/openclaw-cloud-header.png" alt="" style="border-radius: 20px;" /></p>
 
 <h1 id="openclaw">OpenClaw</h1>
 <p>OpenClaw is an open-source AI assistant framework that runs on infrastructure you control. Instead of depending on a hosted AI agent service, you can deploy it on a small VPS and keep your models, tools, and data flow closer to your own environment.</p>
@@ -718,12 +1144,4 @@ gem <span class="nb">install </span>bundler:2.5.7
 
 <p>The project is made up of the infrastructure code, the front end code, the application itself, and the Solidity contracts. For now, the application holds contracts in Ethereum (mainnet and Sepolia) and BNB Smart Chain.</p>
 
-<p>The finished product can be seen here: <a href="https://bocacontracts.com" target="_blank" rel="noopener noreferrer">Boca Contracts Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><category term="web3" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/bocacontracts-main.png" /><media:content medium="image" url="https://dkarim.com/assets/images/bocacontracts-main.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Small Business Marketing</title><link href="https://dkarim.com/small-business-marketing/" rel="alternate" type="text/html" title="Small Business Marketing" /><published>2024-11-15T07:00:00-05:00</published><updated>2024-11-15T07:00:00-05:00</updated><id>https://dkarim.com/small-business-marketing</id><content type="html" xml:base="https://dkarim.com/small-business-marketing/"><![CDATA[<p><img src="/assets/images/palmettodentist.png" alt="Alt text for the image" style="float: left; width: 400px; margin-right: 25px; margin-bottom: 10px;" /></p>
-
-<p>Palmetto Dentist is a small business located in Boca Raton, Florida which specializes in dental implants and other dental services. I worked on their site, which serves mostly as a marketing presence and a landing page for occasional marketing campaigns.</p>
-
-<p>I elected to host the site on AWS LightSail due to the low cost that it provides.</p>
-
-<p>I used a templating app called Mobirise to help with the layout and then finished off the HTML by hand. I have also added several integrations with the Dental Office management platform to help schedule patients through the site directly.</p>
-
-<p>The finished product can be seen here: <a href="https://palmettodentist.com" target="_blank" rel="noopener noreferrer">Palmetto Dentist Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><summary type="html"><![CDATA[]]></summary></entry></feed>
+<p>The finished product can be seen here: <a href="https://bocacontracts.com" target="_blank" rel="noopener noreferrer">Boca Contracts Home Page</a></p>]]></content><author><name></name></author><category term="projects" /><category term="web3" /><summary type="html"><![CDATA[]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dkarim.com/assets/images/bocacontracts-main.png" /><media:content medium="image" url="https://dkarim.com/assets/images/bocacontracts-main.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
